@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AURA | Cinematic Experience</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        'aura-bg': '#050507',
+                        'aura-card': '#121216',
+                        'aura-accent': '#8b5cf6', /* Violet */
+                        'aura-pink': '#ec4899',   /* Pink */
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* CRITICAL: Mobile scroll fix */
+        body { -webkit-tap-highlight-color: transparent; }
+        
+        /* Hide scrollbar but keep scroll */
+        .no-scroll::-webkit-scrollbar { display: none; }
+        .no-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Glassmorphism Utilities */
+        .glass-nav {
+            background: rgba(18, 18, 22, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .glass-card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Splash Screen Animation */
+        #splash { transition: opacity 0.8s ease-out, visibility 0.8s; }
+        .loaded #splash { opacity: 0; visibility: hidden; }
+        
+        /* Smooth Scale on Active */
+        .nav-item:active { transform: scale(0.9); }
+    </style>
+</head>
+<body class="bg-aura-bg text-white overflow-x-hidden h-[100dvh] flex flex-col">
+
+    <div id="splash" class="fixed inset-0 z-[100] bg-aura-bg flex flex-col items-center justify-center">
+        <div class="relative w-24 h-24 mb-6">
+            <div class="absolute inset-0 bg-aura-accent/30 rounded-full blur-2xl animate-pulse-slow"></div>
+            <div class="absolute inset-0 bg-aura-pink/20 rounded-full blur-xl translate-x-2 animate-float"></div>
+            <div class="relative z-10 w-full h-full flex items-center justify-center">
+                <i class="ri-movie-2-fill text-5xl text-white drop-shadow-[0_0_15px_rgba(139,92,246,0.8)]"></i>
+            </div>
+        </div>
+        <h1 class="font-display text-3xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">AURA</h1>
+        <p class="text-gray-500 text-xs mt-2 tracking-widest uppercase">Premium Streaming</p>
+        
+        <div class="w-32 h-1 bg-gray-800 rounded-full mt-8 overflow-hidden">
+            <div class="w-full h-full bg-gradient-to-r from-aura-accent to-aura-pink origin-left animate-[grow_1.5s_ease-out_forwards]" style="width: 0%; animation-fill-mode: forwards; animation-name: grow;"></div>
+        </div>
+        <style> @keyframes grow { to { width: 100%; } } </style>
+    </div>
+        <aside class="hidden md:flex fixed left-0 top-0 h-full w-64 bg-aura-card border-r border-white/5 flex-col z-40">
+        <div class="p-8 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-aura-accent to-aura-pink flex items-center justify-center">
+                <i class="ri-play-fill text-white"></i>
+            </div>
+            <span class="font-display font-bold text-xl tracking-wide">AURA</span>
+        </div>
+        
+        <nav class="flex-1 px-4 space-y-2">
+            <p class="px-4 text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 mt-4">Menu</p>
+            <button onclick="nav('home')" class="d-nav active w-full flex items-center gap-4 px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-all">
+                <i class="ri-home-5-line text-xl"></i> <span class="font-medium">Home</span>
+            </button>
+            <button onclick="nav('discover')" class="d-nav w-full flex items-center gap-4 px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-all">
+                <i class="ri-compass-3-line text-xl"></i> <span class="font-medium">Discover</span>
+            </button>
+            <button onclick="nav('library')" class="d-nav w-full flex items-center gap-4 px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-all">
+                <i class="ri-bookmark-3-line text-xl"></i> <span class="font-medium">Library</span>
+            </button>
+        </nav>
+    </aside>
+
+    <header class="md:hidden fixed top-0 w-full z-40 bg-aura-bg/80 backdrop-blur-md border-b border-white/5 px-6 py-4 flex justify-between items-center transition-all duration-300" id="mobile-header">
+        <div class="flex items-center gap-2">
+            <i class="ri-movie-2-fill text-aura-accent text-xl"></i>
+            <span class="font-display font-bold text-lg">AURA</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="toggleSearch()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center active:scale-95 transition">
+                <i class="ri-search-line text-white"></i>
+            </button>
+            <img src="https://api.dicebear.com/7.x/micah/svg?seed=Majeed" class="w-8 h-8 rounded-full border border-white/10 bg-aura-card">
+        </div>
+    </header>
+
+    <main class="flex-1 md:ml-64 relative pb-24 md:pb-10 pt-20 md:pt-0 overflow-y-auto no-scroll h-screen">
+        
+        <div id="search-bar" class="hidden px-6 mb-6 animate-fade-in-down">
+            <div class="relative">
+                <i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" placeholder="Search movies, series, genres..." 
+                       class="w-full bg-aura-card border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-aura-accent transition-colors placeholder-gray-600">
+            </div>
+        </div>
+
+        <section class="px-6 md:px-10 mb-10">
+            <div class="relative w-full h-[450px] md:h-[500px] rounded-3xl overflow-hidden shadow-2xl shadow-aura-accent/10 group cursor-pointer">
+                <img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=1200" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-aura-bg via-aura-bg/20 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-aura-bg/80 via-transparent to-transparent"></div>
+                
+                <div class="absolute bottom-0 left-0 p-6 md:p-10 w-full">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2 py-1 bg-white/10 backdrop-blur rounded text-[10px] font-bold uppercase tracking-wider text-white border border-white/10">Trending #1</span>
+                        <span class="text-aura-accent text-xs font-bold flex items-center gap-1"><i class="ri-star-fill"></i> 9.8</span>
+                    </div>
+                    <h1 class="font-display text-4xl md:text-6xl font-black mb-2 leading-none">CYBER <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-aura-accent to-aura-pink">NEXUS</span></h1>
+                    <p class="text-gray-400 text-xs md:text-sm line-clamp-2 max-w-md mb-6">In a world where consciousness can be uploaded, one hacker finds the kill code.</p>
+                    
+                    <div class="flex gap-3">
+                        <button class="flex-1 md:flex-none bg-white text-black px-6 py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition">
+                            <i class="ri-play-fill text-lg"></i> Watch
+                        </button>
+                        <button class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-white active:scale-95 transition hover:bg-white/10">
+                            <i class="ri-add-line text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="px-6 md:px-10 mb-8">
+            <h3 class="font-display font-bold text-lg mb-4">Categories</h3>
+            <div class="flex gap-3 overflow-x-auto no-scroll pb-2">
+                <button class="whitespace-nowrap px-6 py-2.5 rounded-full bg-gradient-to-r from-aura-accent to-aura-pink text-white text-xs font-bold shadow-lg shadow-aura-accent/20">All</button>
+                <button class="whitespace-nowrap px-6 py-2.5 rounded-full glass-card border border-white/10 text-gray-300 text-xs font-bold hover:bg-white/10">Action</button>
+                <button class="whitespace-nowrap px-6 py-2.5 rounded-full glass-card border border-white/10 text-gray-300 text-xs font-bold hover:bg-white/10">Sci-Fi</button>
+                <button class="whitespace-nowrap px-6 py-2.5 rounded-full glass-card border border-white/10 text-gray-300 text-xs font-bold hover:bg-white/10">Drama</button>
+                <button class="whitespace-nowrap px-6 py-2.5 rounded-full glass-card border border-white/10 text-gray-300 text-xs font-bold hover:bg-white/10">Anime</button>
+            </div>
+        </section>
+
+        <section class="px-6 md:px-10">
+            <div class="flex justify-between items-end mb-4">
+                <h3 class="font-display font-bold text-lg">For You</h3>
+                <a href="#" class="text-xs text-aura-accent font-bold">See All</a>
+            </div>
+            
+            <div id="grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <div class="aspect-[2/3] rounded-2xl bg-white/5 animate-pulse"></div>
+                <div class="aspect-[2/3] rounded-2xl bg-white/5 animate-pulse"></div>
+            </div>
+        </section>
+        
+        <div class="h-24 md:hidden"></div>
+                              </main>
+              <nav class="md:hidden fixed bottom-0 w-full z-50 glass-nav pb-safe">
+        <div class="flex justify-around items-center h-16 px-2">
+            <button onclick="mobileNav('home')" class="m-nav active nav-item flex flex-col items-center gap-1 p-2 w-16 text-aura-accent">
+                <i class="ri-home-5-fill text-xl"></i>
+                <span class="text-[10px] font-medium">Home</span>
+            </button>
+            <button onclick="mobileNav('search')" class="m-nav nav-item flex flex-col items-center gap-1 p-2 w-16 text-gray-500">
+                <i class="ri-compass-3-line text-xl"></i>
+                <span class="text-[10px] font-medium">Explore</span>
+            </button>
+            <button class="nav-item -mt-8 w-14 h-14 rounded-full bg-gradient-to-tr from-aura-accent to-aura-pink flex items-center justify-center shadow-lg shadow-aura-accent/30 text-white">
+                <i class="ri-play-fill text-2xl ml-1"></i>
+            </button>
+            <button onclick="mobileNav('saved')" class="m-nav nav-item flex flex-col items-center gap-1 p-2 w-16 text-gray-500">
+                <i class="ri-bookmark-3-line text-xl"></i>
+                <span class="text-[10px] font-medium">Saved</span>
+            </button>
+            <button onclick="mobileNav('profile')" class="m-nav nav-item flex flex-col items-center gap-1 p-2 w-16 text-gray-500">
+                <i class="ri-user-3-line text-xl"></i>
+                <span class="text-[10px] font-medium">Profile</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // 1. SPLASH SCREEN LOGIC
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+                // Trigger Grid Load Animation
+                setTimeout(renderGrid, 300);
+            }, 2000); // 2 seconds splash
+        });
+
+        // 2. DATA
+        const movies = [
+            { title: "Dune: Part Two", year: "2024", rating: "9.5", img: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=600" },
+            { title: "Blade Runner", year: "2049", rating: "9.1", img: "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=600" },
+            { title: "Interstellar", year: "2014", rating: "9.8", img: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600" },
+            { title: "The Creator", year: "2023", rating: "8.9", img: "https://images.unsplash.com/photo-1535083783855-76462b2f9ce8?q=80&w=600" },
+            { title: "Andor", year: "2022", rating: "9.2", img: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=600" },
+            { title: "Severance", year: "2022", rating: "9.4", img: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=600" },
+            { title: "Oppenheimer", year: "2023", rating: "9.6", img: "https://images.unsplash.com/photo-1478720568477-152d9b164e63?q=80&w=600" },
+            { title: "Dark", year: "2019", rating: "9.7", img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600" }
+        ];
+
+        // 3. RENDER GRID
+        function renderGrid() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            
+            movies.forEach((m, i) => {
+                grid.innerHTML += `
+                    <div class="relative aspect-[2/3] rounded-2xl overflow-hidden cursor-pointer group animate-[fadeIn_0.5s_ease-out_forwards]" style="animation-delay: ${i * 100}ms; opacity: 0;">
+                        <img src="${m.img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                        
+                        <div class="absolute top-2 right-2 bg-black/40 backdrop-blur px-2 py-0.5 rounded-lg border border-white/10">
+                            <span class="text-[10px] font-bold text-aura-accent">★ ${m.rating}</span>
+                        </div>
+                        
+                        <div class="absolute bottom-0 left-0 w-full p-3 transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                            <h4 class="text-white text-xs font-bold leading-tight mb-0.5 truncate">${m.title}</h4>
+                            <p class="text-[10px] text-gray-400">${m.year}</p>
+                        </div>
+                    </div>
+                    <style> @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } } </style>
+                `;
+            });
+        }
+
+        // 4. MOBILE NAVIGATION LOGIC
+        function mobileNav(tab) {
+            // Reset Icons
+            document.querySelectorAll('.m-nav i').forEach(icon => {
+                icon.className = icon.className.replace('-fill', '-line');
+            });
+            document.querySelectorAll('.m-nav').forEach(btn => {
+                btn.classList.remove('text-aura-accent');
+                btn.classList.add('text-gray-500');
+            });
+
+            // Set Active
+            const activeBtn = event.currentTarget;
+            activeBtn.classList.remove('text-gray-500');
+            activeBtn.classList.add('text-aura-accent');
+            
+            // Toggle Icon Fill
+            const icon = activeBtn.querySelector('i');
+            icon.className = icon.className.replace('-line', '-fill');
+        }
+
+        // 5. SEARCH TOGGLE
+        function toggleSearch() {
+            const searchBar = document.getElementById('search-bar');
+            searchBar.classList.toggle('hidden');
+            if(!searchBar.classList.contains('hidden')) {
+                searchBar.querySelector('input').focus();
+            }
+        }
+    </script>
+</body>
+</html>
