@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AURA | Smooth Stream</title>
+    <title>AURA | Cinematic</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Outfit:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 
     <script>
@@ -16,204 +16,240 @@
                 extend: {
                     fontFamily: { sans: ['Manrope', 'sans-serif'], display: ['Outfit', 'sans-serif'] },
                     colors: {
-                        'bg-main': '#000000',
-                        'bg-glass': 'rgba(20, 20, 20, 0.8)',
-                        'accent': '#7c3aed',
+                        'bg-main': '#020203', /* Ultra Dark */
+                        'bg-glass': 'rgba(10, 10, 12, 0.85)',
+                        'accent': '#8b5cf6',
+                        'accent-glow': '#a78bfa',
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #000; -webkit-tap-highlight-color: transparent; overflow: hidden; }
+        body { background-color: #020203; -webkit-tap-highlight-color: transparent; overflow: hidden; }
+        .no-scroll::-webkit-scrollbar { display: none; }
         
-        /* 1. THE SPLASH SCREEN LAYER */
+        /* --- 1. THE LOGO SHIMMER (Restored) --- */
+        .brand-text {
+            background: linear-gradient(to right, #fff 20%, #a78bfa 50%, #fff 80%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 4s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        /* --- 2. OPTIMIZED TRANSITIONS (No Lag) --- */
+        /* We use OPACITY only, which is cheap for the phone's GPU */
+        
         #splash {
             position: fixed; inset: 0; z-index: 100;
-            background-color: #000;
-            display: flex; align-items: center; justify-content: center;
-            /* GPU Acceleration Hints */
-            will-change: opacity, visibility;
-            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s;
+            background: #020203;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s ease-out, visibility 0.8s;
+            will-change: opacity;
         }
 
-        /* 2. THE APP CONTENT LAYER (Underneath) */
-        #app-root {
+        #app-content {
             opacity: 0;
-            transform: scale(1.1); /* Starts slightly zoomed in */
-            filter: blur(10px);    /* Starts slightly blurry */
-            transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: transform, opacity, filter;
-            height: 100dvh;
-            display: flex; flex-direction: column;
+            transform: scale(0.98); /* Slight zoom in effect */
+            transition: opacity 1s ease-out, transform 1s ease-out;
+            will-change: opacity, transform;
+            height: 100dvh; display: flex; flex-direction: column;
         }
 
-        /* 3. THE TRIGGER CLASS (Added by JS) */
+        /* The States */
         body.loaded #splash { opacity: 0; visibility: hidden; }
-        body.loaded #app-root { opacity: 1; transform: scale(1); filter: blur(0px); }
+        body.loaded #app-content { opacity: 1; transform: scale(1); }
 
-        /* Logo Pulse Animation */
-        .logo-pulse {
-            animation: breathe 3s ease-in-out infinite;
+        /* Glass Utilities */
+        .glass-nav {
+            background: rgba(2, 2, 3, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); opacity: 0.8; text-shadow: 0 0 20px rgba(124, 58, 237, 0); }
-            50% { transform: scale(1.05); opacity: 1; text-shadow: 0 0 40px rgba(124, 58, 237, 0.5); }
-        }
-
-        /* Hide Scrollbars */
-        .no-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="text-white">
 
     <div id="splash">
-        <div class="flex flex-col items-center justify-center gap-6">
-            <div class="relative w-20 h-20 flex items-center justify-center">
-                <div class="absolute inset-0 border-2 border-accent/30 rounded-full animate-[spin_4s_linear_infinite]"></div>
-                <i class="ri-play-fill text-5xl text-accent logo-pulse"></i>
+        <div class="relative flex items-center justify-center">
+            <div class="absolute inset-0 bg-accent/20 blur-[60px] rounded-full animate-pulse"></div>
+            
+            <div class="text-center relative z-10">
+                <i class="ri-movie-2-fill text-5xl text-accent mb-4 block drop-shadow-lg"></i>
+                <h1 class="font-display text-5xl font-black tracking-[0.2em] brand-text">AURA</h1>
             </div>
-            <h1 class="font-display text-4xl font-black tracking-[0.3em] text-white animate-pulse">AURA</h1>
         </div>
-    </div>
-        <div id="app-root">
         
-        <header class="absolute top-0 w-full z-40 p-6 flex justify-between items-start bg-gradient-to-b from-black/80 to-transparent">
+        <div class="absolute bottom-12 w-32 h-1 bg-white/10 rounded-full overflow-hidden">
+            <div class="h-full w-full bg-accent origin-left animate-[grow_2s_ease-out_forwards]" style="width: 0%"></div>
+        </div>
+        <style> @keyframes grow { to { width: 100%; } } </style>
+    </div>
+        <div id="app-content">
+        
+        <header class="fixed top-0 w-full z-40 px-6 py-5 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent transition-all duration-300" id="header">
             <div class="flex items-center gap-2">
-                <i class="ri-movie-2-fill text-accent text-xl"></i>
-                <span class="font-display font-bold text-lg tracking-wider">AURA</span>
+                <i class="ri-focus-3-line text-accent text-xl"></i>
+                <span class="font-display font-bold text-xl tracking-wider brand-text">AURA</span>
             </div>
             <div class="flex items-center gap-4">
-                <i class="ri-cast-line text-xl"></i>
-                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=Majeed" class="w-8 h-8 rounded-full border border-white/20">
+                <button class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center active:scale-95 transition backdrop-blur-md">
+                    <i class="ri-search-2-line text-gray-200"></i>
+                </button>
+                <div class="w-10 h-10 rounded-full p-[2px] bg-gradient-to-tr from-accent to-white">
+                    <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=Majeed" class="w-full h-full rounded-full bg-black">
+                </div>
             </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto no-scroll pb-24">
+        <main class="flex-1 overflow-y-auto no-scroll pb-28">
             
-            <section class="relative h-[85vh] w-full">
+            <section class="relative w-full h-[75vh]">
                 <img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=800" class="w-full h-full object-cover">
                 
-                <div class="absolute inset-0 bg-gradient-to-t from-bg-main via-bg-main/20 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-b from-bg-main/60 via-transparent to-bg-main"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-bg-main via-bg-main/40 to-transparent"></div>
                 
-                <div class="absolute bottom-0 w-full p-6 flex flex-col items-center text-center">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/120px-Google_%22G%22_logo.svg.png" class="w-6 h-6 mb-4 opacity-0"> <span class="text-accent font-bold text-[10px] tracking-widest uppercase mb-2 border border-accent/40 px-3 py-1 rounded-full backdrop-blur-md">
-                        #1 Global Hit
-                    </span>
-                    <h1 class="font-display text-6xl font-black leading-[0.85] mb-4 drop-shadow-2xl">CYBER<br>NEXUS</h1>
-                    
-                    <div class="flex items-center justify-center gap-3 text-xs font-medium text-gray-300 mb-8">
-                        <span class="text-green-400">98% Match</span>
-                        <span>•</span>
-                        <span>2025</span>
-                        <span>•</span>
-                        <span class="border border-white/30 px-1 rounded">4K</span>
-                    </div>
+                <div class="absolute bottom-0 w-full px-6 pb-6">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-0.5 rounded-md bg-accent text-white text-[10px] font-bold uppercase tracking-wide">Top 10</span>
+                            <span class="px-2 py-0.5 rounded-md border border-white/20 backdrop-blur-md text-[10px] font-bold uppercase tracking-wide">Sci-Fi</span>
+                        </div>
+                        
+                        <h1 class="font-display text-6xl font-black leading-[0.85] mb-4 drop-shadow-2xl tracking-tight">CYBER<br><span class="text-accent-glow">NEXUS</span></h1>
+                        
+                        <div class="flex items-center gap-3 text-xs font-medium text-gray-300 mb-6">
+                            <span class="text-green-400">98% Match</span>
+                            <span>•</span>
+                            <span>2025</span>
+                            <span>•</span>
+                            <span class="border border-white/20 px-1 rounded text-[9px]">4K</span>
+                        </div>
 
-                    <div class="flex gap-4 w-full">
-                        <button class="flex-1 bg-white text-black py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition">
-                            <i class="ri-play-fill text-xl"></i> Play
-                        </button>
-                        <button class="flex-1 bg-white/10 backdrop-blur-md text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition">
-                            <i class="ri-add-line text-xl"></i> List
-                        </button>
+                        <div class="flex gap-3 w-full max-w-sm">
+                            <button class="flex-1 bg-white text-black h-12 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition shadow-lg shadow-white/10">
+                                <i class="ri-play-fill text-xl"></i> Play
+                            </button>
+                            <button class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center text-white active:scale-95 transition border border-white/10">
+                                <i class="ri-add-line text-xl"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
-                        <section class="pl-6 mb-8 mt-6">
-                <h3 class="font-bold text-white text-lg mb-4">Trending Now</h3>
+                        <section class="pl-6 mb-8 mt-2">
+                <h3 class="font-display font-bold text-base text-white mb-4">Continue Watching</h3>
                 <div class="flex gap-4 overflow-x-auto no-scroll pr-6">
-                    <div class="relative flex-none w-[140px] aspect-[2/3] rounded-lg overflow-hidden bg-gray-900">
-                        <img src="https://images.unsplash.com/photo-1535083783855-76462b2f9ce8?q=80&w=400" class="w-full h-full object-cover">
-                        <div class="absolute top-0 right-0 bg-accent px-2 py-0.5 text-[10px] font-bold rounded-bl-lg">NEW</div>
+                    <div class="relative flex-none w-60 aspect-video rounded-xl overflow-hidden bg-gray-900 group">
+                        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=500" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition">
+                        <div class="absolute inset-0 flex items-center justify-center"><i class="ri-play-circle-fill text-4xl text-white/90 shadow-xl"></i></div>
+                        <div class="absolute bottom-0 w-full h-1 bg-gray-700"><div class="w-[65%] h-full bg-accent"></div></div>
                     </div>
-                    <div class="relative flex-none w-[140px] aspect-[2/3] rounded-lg overflow-hidden bg-gray-900">
-                        <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=400" class="w-full h-full object-cover">
+                    <div class="relative flex-none w-60 aspect-video rounded-xl overflow-hidden bg-gray-900 group">
+                        <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=500" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition">
+                        <div class="absolute inset-0 flex items-center justify-center"><i class="ri-play-circle-fill text-4xl text-white/90 shadow-xl"></i></div>
+                        <div class="absolute bottom-0 w-full h-1 bg-gray-700"><div class="w-[30%] h-full bg-accent"></div></div>
                     </div>
-                    <div class="relative flex-none w-[140px] aspect-[2/3] rounded-lg overflow-hidden bg-gray-900">
+                </div>
+            </section>
+
+            <section class="pl-6 mb-4">
+                <h3 class="font-display font-bold text-base text-white mb-4">Trending Now</h3>
+                <div class="flex gap-3 overflow-x-auto no-scroll pr-6">
+                    <div class="relative flex-none w-[130px] aspect-[2/3] rounded-xl overflow-hidden bg-gray-900">
                         <img src="https://images.unsplash.com/photo-1695320582316-0702756df656?q=80&w=400" class="w-full h-full object-cover">
+                        <div class="absolute top-0 right-0 bg-accent text-[9px] font-bold px-1.5 py-0.5 rounded-bl-lg text-white">NEW</div>
                     </div>
-                </div>
-            </section>
-
-             <section class="pl-6 mb-8">
-                <h3 class="font-bold text-white text-lg mb-4">Continue Watching</h3>
-                <div class="flex gap-4 overflow-x-auto no-scroll pr-6">
-                    <div class="relative flex-none w-[240px] aspect-video rounded-lg overflow-hidden bg-gray-900">
-                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=500" class="w-full h-full object-cover opacity-80">
-                        <div class="absolute inset-0 flex items-center justify-center"><i class="ri-play-circle-fill text-4xl text-white/90"></i></div>
-                        <div class="absolute bottom-0 w-full h-1 bg-gray-700"><div class="w-[60%] h-full bg-accent"></div></div>
+                    <div class="relative flex-none w-[130px] aspect-[2/3] rounded-xl overflow-hidden bg-gray-900">
+                        <img src="https://images.unsplash.com/photo-1689780644956-7225471a2c16?q=80&w=400" class="w-full h-full object-cover">
                     </div>
-                     <div class="relative flex-none w-[240px] aspect-video rounded-lg overflow-hidden bg-gray-900">
-                        <img src="https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=500" class="w-full h-full object-cover opacity-80">
-                        <div class="absolute inset-0 flex items-center justify-center"><i class="ri-play-circle-fill text-4xl text-white/90"></i></div>
-                        <div class="absolute bottom-0 w-full h-1 bg-gray-700"><div class="w-[20%] h-full bg-accent"></div></div>
+                    <div class="relative flex-none w-[130px] aspect-[2/3] rounded-xl overflow-hidden bg-gray-900">
+                        <img src="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=400" class="w-full h-full object-cover">
                     </div>
                 </div>
             </section>
         </main>
-
-        <nav class="fixed bottom-0 w-full z-50 bg-black/90 backdrop-blur-xl border-t border-white/10 pb-safe">
-            <div class="flex justify-around items-center h-[70px] px-2">
-                <button onclick="nav(this)" class="active nav-item flex flex-col items-center gap-1 p-2 w-16 text-accent">
-                    <i class="ri-home-5-fill text-xl transition-transform duration-300"></i>
-                    <span class="text-[10px] font-bold">Home</span>
-                </button>
-                <button onclick="nav(this)" class="nav-item flex flex-col items-center gap-1 p-2 w-16 text-gray-500 hover:text-white transition-colors">
-                    <i class="ri-search-line text-xl transition-transform duration-300"></i>
-                    <span class="text-[10px] font-medium">Search</span>
-                </button>
-                <button onclick="nav(this)" class="nav-item flex flex-col items-center gap-1 p-2 w-16 text-gray-500 hover:text-white transition-colors">
-                    <i class="ri-download-cloud-line text-xl transition-transform duration-300"></i>
-                    <span class="text-[10px] font-medium">Offline</span>
-                </button>
-                <button onclick="nav(this)" class="nav-item flex flex-col items-center gap-1 p-2 w-16 text-gray-500 hover:text-white transition-colors">
-                    <i class="ri-user-3-line text-xl transition-transform duration-300"></i>
-                    <span class="text-[10px] font-medium">My Aura</span>
-                </button>
-            </div>
-        </nav>
         </div>
-            <script>
-        // 1. THE SMOOTH TRANSITION LOGIC
-        window.addEventListener('load', () => {
-            // Wait 2.5 seconds for the brand moment
+            <nav class="fixed bottom-0 w-full z-50 glass-nav pb-safe transition-transform duration-300" id="bottom-nav">
+        <div class="flex justify-around items-center h-[70px] px-2">
+            <button onclick="nav(this)" class="active nav-btn relative flex-1 flex flex-col items-center justify-center gap-1 h-full text-accent">
+                <i class="ri-home-smile-fill text-2xl transition-transform duration-200"></i>
+                <span class="text-[10px] font-bold">Home</span>
+            </button>
+            
+            <button onclick="nav(this)" class="nav-btn relative flex-1 flex flex-col items-center justify-center gap-1 h-full text-gray-500 hover:text-gray-300">
+                <i class="ri-compass-3-line text-2xl transition-transform duration-200"></i>
+                <span class="text-[10px] font-medium">Explore</span>
+            </button>
+            
+            <button onclick="nav(this)" class="nav-btn relative flex-1 flex flex-col items-center justify-center gap-1 h-full text-gray-500 hover:text-gray-300">
+                <i class="ri-bookmark-3-line text-2xl transition-transform duration-200"></i>
+                <span class="text-[10px] font-medium">Saved</span>
+            </button>
+            
+            <button onclick="nav(this)" class="nav-btn relative flex-1 flex flex-col items-center justify-center gap-1 h-full text-gray-500 hover:text-gray-300">
+                <i class="ri-user-3-line text-2xl transition-transform duration-200"></i>
+                <span class="text-[10px] font-medium">Profile</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // 1. SMOOTH SPLASH LOGIC
+        window.onload = () => {
             setTimeout(() => {
-                // Add the class that triggers CSS transitions
-                document.body.classList.add('loaded');
+                document.body.classList.add('loaded'); // Triggers the CSS transition
                 
-                // Unlock scrolling after transition is done
+                // Allow scrolling after animation finishes
                 setTimeout(() => {
                     document.body.style.overflow = 'auto';
-                }, 1000);
-            }, 2500);
-        });
+                }, 800);
+            }, 2200);
+        };
 
-        // 2. NAV ANIMATION
+        // 2. NAV LOGIC
         function nav(btn) {
-            // Reset all
-            document.querySelectorAll('.nav-item').forEach(b => {
+            // Reset
+            document.querySelectorAll('.nav-btn').forEach(b => {
                 b.classList.remove('text-accent', 'active');
                 b.classList.add('text-gray-500');
-                
-                // Reset Icon
-                const icon = b.querySelector('i');
-                icon.className = icon.className.replace('-fill', '-line');
-                if(icon.classList.contains('ri-home-5-line')) icon.classList.replace('ri-home-5-line', 'ri-home-5-line');
+                // Icon to line
+                let i = b.querySelector('i');
+                i.className = i.className.replace('-fill', '-line');
+                // Reset specific icons logic if needed
+                if(i.classList.contains('ri-home-smile-line')) i.className = i.className; 
             });
 
-            // Activate Clicked
+            // Activate
             btn.classList.remove('text-gray-500');
             btn.classList.add('text-accent', 'active');
             
-            // Fill Icon
-            const icon = btn.querySelector('i');
-            icon.className = icon.className.replace('-line', '-fill');
+            // Icon to fill
+            let i = btn.querySelector('i');
+            i.className = i.className.replace('-line', '-fill');
             
-            // Micro-Bounce Animation
-            icon.classList.add('scale-125');
-            setTimeout(() => icon.classList.remove('scale-125'), 200);
+            // Pop Animation
+            i.classList.add('scale-110');
+            setTimeout(() => i.classList.remove('scale-110'), 200);
         }
+
+        // 3. HEADER SCROLL FADE
+        const main = document.querySelector('main');
+        const header = document.getElementById('header');
+        
+        main.addEventListener('scroll', () => {
+            if (main.scrollTop > 50) {
+                header.classList.add('bg-bg-main/90', 'backdrop-blur-xl', 'border-b', 'border-white/5');
+                header.classList.remove('bg-gradient-to-b');
+            } else {
+                header.classList.remove('bg-bg-main/90', 'backdrop-blur-xl', 'border-b', 'border-white/5');
+                header.classList.add('bg-gradient-to-b');
+            }
+        });
     </script>
 </body>
 </html>
