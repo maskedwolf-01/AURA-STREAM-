@@ -7,7 +7,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Outfit:wght@800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 
     <script>
@@ -16,199 +16,203 @@
                 extend: {
                     fontFamily: { sans: ['Manrope', 'sans-serif'], display: ['Outfit', 'sans-serif'] },
                     colors: {
-                        'bg-main': '#020203', /* Ultra Dark */
+                        'bg-main': '#000000',
                         'bg-glass': 'rgba(10, 10, 12, 0.85)',
-                        'accent': '#8b5cf6',
-                        'accent-glow': '#a78bfa',
+                        'accent': '#7c3aed',
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #020203; -webkit-tap-highlight-color: transparent; overflow: hidden; }
+        body { background-color: #000; -webkit-tap-highlight-color: transparent; overflow: hidden; }
         .no-scroll::-webkit-scrollbar { display: none; }
         
-        /* --- 1. THE LOGO SHIMMER (Restored) --- */
-        .brand-text {
-            background: linear-gradient(to right, #fff 20%, #a78bfa 50%, #fff 80%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 4s linear infinite;
-        }
-        @keyframes shine { to { background-position: 200% center; } }
-
-        /* --- 2. OPTIMIZED TRANSITIONS (No Lag) --- */
-        /* We use OPACITY only, which is cheap for the phone's GPU */
-        
+        /* --- 1. THE NETFLIX-STYLE ZOOM ANIMATION --- */
         #splash {
-            position: fixed; inset: 0; z-index: 100;
-            background: #020203;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease-out, visibility 0.8s;
-            will-change: opacity;
+            position: fixed; inset: 0; z-index: 9999;
+            background-color: #000;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; /* Critical to prevent scrollbars during zoom */
         }
 
+        .intro-logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            font-size: 4rem; /* Start small */
+            letter-spacing: -2px;
+            color: #8b5cf6; /* Accent Color */
+            opacity: 0;
+            
+            /* The Animation Sequence */
+            animation: 
+                fadeIn 1s ease-out forwards,           /* 1. Appear */
+                pulse 1.5s ease-in-out 1s,             /* 2. Wait/Pulse */
+                cameraFlyThrough 0.8s cubic-bezier(0.7, 0, 0.84, 0) forwards 2.5s; /* 3. ZOOM */
+            
+            /* Performance Optimization */
+            will-change: transform, opacity, filter;
+            transform: translate3d(0,0,0); /* Force GPU */
+        }
+
+        /* The "Fly Through" Effect */
+        @keyframes cameraFlyThrough {
+            0% { 
+                transform: scale(1) translate3d(0,0,0); 
+                opacity: 1; 
+                filter: blur(0px); 
+            }
+            40% {
+                opacity: 1; /* Keep visible longer */
+            }
+            100% { 
+                transform: scale(30) translate3d(0,0,0); /* Massive Zoom */
+                opacity: 0; 
+                filter: blur(10px); /* Motion Blur trick */
+            }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+
+        /* --- 2. HOME SCREEN TRANSITION --- */
         #app-content {
             opacity: 0;
-            transform: scale(0.98); /* Slight zoom in effect */
+            transform: scale(1.05);
             transition: opacity 1s ease-out, transform 1s ease-out;
-            will-change: opacity, transform;
             height: 100dvh; display: flex; flex-direction: column;
         }
 
-        /* The States */
-        body.loaded #splash { opacity: 0; visibility: hidden; }
+        /* Trigger classes */
+        body.loaded #splash { display: none; }
         body.loaded #app-content { opacity: 1; transform: scale(1); }
-
-        /* Glass Utilities */
-        .glass-nav {
-            background: rgba(2, 2, 3, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        
+        /* Gradient Text for Logo */
+        .gradient-text {
+            background: linear-gradient(to bottom, #a78bfa, #7c3aed);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
 <body class="text-white">
 
     <div id="splash">
-        <div class="relative flex items-center justify-center">
-            <div class="absolute inset-0 bg-accent/20 blur-[60px] rounded-full animate-pulse"></div>
-            
-            <div class="text-center relative z-10">
-                <i class="ri-movie-2-fill text-5xl text-accent mb-4 block drop-shadow-lg"></i>
-                <h1 class="font-display text-5xl font-black tracking-[0.2em] brand-text">AURA</h1>
-            </div>
-        </div>
-        
-        <div class="absolute bottom-12 w-32 h-1 bg-white/10 rounded-full overflow-hidden">
-            <div class="h-full w-full bg-accent origin-left animate-[grow_2s_ease-out_forwards]" style="width: 0%"></div>
-        </div>
-        <style> @keyframes grow { to { width: 100%; } } </style>
+        <h1 class="intro-logo gradient-text">AURA</h1>
     </div>
         <div id="app-content">
         
-        <header class="fixed top-0 w-full z-40 px-6 py-5 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent transition-all duration-300" id="header">
-            <div class="flex items-center gap-2">
-                <i class="ri-focus-3-line text-accent text-xl"></i>
-                <span class="font-display font-bold text-xl tracking-wider brand-text">AURA</span>
+        <header class="fixed top-0 w-full z-40 px-6 py-5 flex justify-between items-center bg-gradient-to-b from-black/90 to-transparent transition-all duration-300" id="header">
+            <div class="flex items-center gap-1">
+                <i class="ri-movie-2-fill text-accent text-xl"></i>
+                <span class="font-display font-black text-xl tracking-tighter">AURA</span>
             </div>
             <div class="flex items-center gap-4">
-                <button class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center active:scale-95 transition backdrop-blur-md">
-                    <i class="ri-search-2-line text-gray-200"></i>
-                </button>
-                <div class="w-10 h-10 rounded-full p-[2px] bg-gradient-to-tr from-accent to-white">
-                    <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=Majeed" class="w-full h-full rounded-full bg-black">
-                </div>
+                <i class="ri-search-line text-xl text-gray-300"></i>
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=Majeed" class="w-8 h-8 rounded-full border border-white/20">
             </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto no-scroll pb-28">
+        <main class="flex-1 overflow-y-auto no-scroll pb-24">
             
-            <section class="relative w-full h-[75vh]">
+            <section class="relative w-full h-[80vh]">
                 <img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=800" class="w-full h-full object-cover">
                 
-                <div class="absolute inset-0 bg-gradient-to-b from-bg-main/60 via-transparent to-bg-main"></div>
-                <div class="absolute inset-0 bg-gradient-to-t from-bg-main via-bg-main/40 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-bg-main via-transparent to-transparent"></div>
                 
-                <div class="absolute bottom-0 w-full px-6 pb-6">
+                <div class="absolute bottom-0 w-full px-6 pb-8">
                     <div class="flex flex-col items-center text-center">
+                        
                         <div class="flex items-center gap-2 mb-3">
-                            <span class="px-2 py-0.5 rounded-md bg-accent text-white text-[10px] font-bold uppercase tracking-wide">Top 10</span>
-                            <span class="px-2 py-0.5 rounded-md border border-white/20 backdrop-blur-md text-[10px] font-bold uppercase tracking-wide">Sci-Fi</span>
+                            <span class="bg-accent text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-[0_0_15px_rgba(124,58,237,0.5)]">TOP 10</span>
                         </div>
                         
-                        <h1 class="font-display text-6xl font-black leading-[0.85] mb-4 drop-shadow-2xl tracking-tight">CYBER<br><span class="text-accent-glow">NEXUS</span></h1>
+                        <h1 class="font-display text-7xl font-black leading-[0.8] mb-4 drop-shadow-2xl tracking-tighter">CYBER<br><span class="text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400">NEXUS</span></h1>
                         
                         <div class="flex items-center gap-3 text-xs font-medium text-gray-300 mb-6">
-                            <span class="text-green-400">98% Match</span>
-                            <span>•</span>
+                            <span class="text-green-400 font-bold">98% Match</span>
                             <span>2025</span>
-                            <span>•</span>
-                            <span class="border border-white/20 px-1 rounded text-[9px]">4K</span>
+                            <span class="bg-white/10 px-1 rounded text-[10px] border border-white/10">4K HDR</span>
                         </div>
 
                         <div class="flex gap-3 w-full max-w-sm">
-                            <button class="flex-1 bg-white text-black h-12 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition shadow-lg shadow-white/10">
+                            <button class="flex-1 bg-white text-black h-12 rounded-lg font-bold flex items-center justify-center gap-2 active:scale-95 transition shadow-lg shadow-white/10">
                                 <i class="ri-play-fill text-xl"></i> Play
                             </button>
-                            <button class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center text-white active:scale-95 transition border border-white/10">
+                            <button class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center text-white active:scale-95 transition border border-white/10">
                                 <i class="ri-add-line text-xl"></i>
                             </button>
                         </div>
                     </div>
                 </div>
             </section>
-                        <section class="pl-6 mb-8 mt-2">
-                <h3 class="font-display font-bold text-base text-white mb-4">Continue Watching</h3>
+                        <section class="pl-6 mb-8 mt-4">
+                <h3 class="font-display font-bold text-base text-white mb-3">Continue Watching</h3>
                 <div class="flex gap-4 overflow-x-auto no-scroll pr-6">
-                    <div class="relative flex-none w-60 aspect-video rounded-xl overflow-hidden bg-gray-900 group">
+                    <div class="relative flex-none w-64 aspect-video rounded-lg overflow-hidden bg-gray-900 group">
                         <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=500" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition">
-                        <div class="absolute inset-0 flex items-center justify-center"><i class="ri-play-circle-fill text-4xl text-white/90 shadow-xl"></i></div>
+                        <div class="absolute inset-0 flex items-center justify-center"><div class="w-10 h-10 rounded-full bg-black/50 backdrop-blur flex items-center justify-center border border-white/20"><i class="ri-play-fill text-white"></i></div></div>
                         <div class="absolute bottom-0 w-full h-1 bg-gray-700"><div class="w-[65%] h-full bg-accent"></div></div>
                     </div>
-                    <div class="relative flex-none w-60 aspect-video rounded-xl overflow-hidden bg-gray-900 group">
+                    <div class="relative flex-none w-64 aspect-video rounded-lg overflow-hidden bg-gray-900 group">
                         <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=500" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition">
-                        <div class="absolute inset-0 flex items-center justify-center"><i class="ri-play-circle-fill text-4xl text-white/90 shadow-xl"></i></div>
-                        <div class="absolute bottom-0 w-full h-1 bg-gray-700"><div class="w-[30%] h-full bg-accent"></div></div>
+                        <div class="absolute inset-0 flex items-center justify-center"><div class="w-10 h-10 rounded-full bg-black/50 backdrop-blur flex items-center justify-center border border-white/20"><i class="ri-play-fill text-white"></i></div></div>
+                        <div class="absolute bottom-0 w-full h-1 bg-gray-700"><div class="w-[20%] h-full bg-accent"></div></div>
                     </div>
                 </div>
             </section>
 
             <section class="pl-6 mb-4">
-                <h3 class="font-display font-bold text-base text-white mb-4">Trending Now</h3>
+                <h3 class="font-display font-bold text-base text-white mb-3">Trending Now</h3>
                 <div class="flex gap-3 overflow-x-auto no-scroll pr-6">
-                    <div class="relative flex-none w-[130px] aspect-[2/3] rounded-xl overflow-hidden bg-gray-900">
+                    <div class="relative flex-none w-[130px] aspect-[2/3] rounded-lg overflow-hidden bg-gray-900">
                         <img src="https://images.unsplash.com/photo-1695320582316-0702756df656?q=80&w=400" class="w-full h-full object-cover">
                         <div class="absolute top-0 right-0 bg-accent text-[9px] font-bold px-1.5 py-0.5 rounded-bl-lg text-white">NEW</div>
                     </div>
-                    <div class="relative flex-none w-[130px] aspect-[2/3] rounded-xl overflow-hidden bg-gray-900">
+                    <div class="relative flex-none w-[130px] aspect-[2/3] rounded-lg overflow-hidden bg-gray-900">
                         <img src="https://images.unsplash.com/photo-1689780644956-7225471a2c16?q=80&w=400" class="w-full h-full object-cover">
                     </div>
-                    <div class="relative flex-none w-[130px] aspect-[2/3] rounded-xl overflow-hidden bg-gray-900">
+                    <div class="relative flex-none w-[130px] aspect-[2/3] rounded-lg overflow-hidden bg-gray-900">
                         <img src="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=400" class="w-full h-full object-cover">
                     </div>
                 </div>
             </section>
         </main>
         </div>
-            <nav class="fixed bottom-0 w-full z-50 glass-nav pb-safe transition-transform duration-300" id="bottom-nav">
-        <div class="flex justify-around items-center h-[70px] px-2">
+            <nav class="fixed bottom-0 w-full z-50 bg-black/90 backdrop-blur-xl border-t border-white/10 pb-safe">
+        <div class="flex justify-around items-center h-[65px] px-2">
             <button onclick="nav(this)" class="active nav-btn relative flex-1 flex flex-col items-center justify-center gap-1 h-full text-accent">
-                <i class="ri-home-smile-fill text-2xl transition-transform duration-200"></i>
-                <span class="text-[10px] font-bold">Home</span>
+                <i class="ri-home-5-fill text-xl transition-transform duration-200"></i>
+                <span class="text-[10px] font-medium">Home</span>
             </button>
             
             <button onclick="nav(this)" class="nav-btn relative flex-1 flex flex-col items-center justify-center gap-1 h-full text-gray-500 hover:text-gray-300">
-                <i class="ri-compass-3-line text-2xl transition-transform duration-200"></i>
+                <i class="ri-compass-3-line text-xl transition-transform duration-200"></i>
                 <span class="text-[10px] font-medium">Explore</span>
             </button>
             
             <button onclick="nav(this)" class="nav-btn relative flex-1 flex flex-col items-center justify-center gap-1 h-full text-gray-500 hover:text-gray-300">
-                <i class="ri-bookmark-3-line text-2xl transition-transform duration-200"></i>
+                <i class="ri-bookmark-3-line text-xl transition-transform duration-200"></i>
                 <span class="text-[10px] font-medium">Saved</span>
             </button>
             
             <button onclick="nav(this)" class="nav-btn relative flex-1 flex flex-col items-center justify-center gap-1 h-full text-gray-500 hover:text-gray-300">
-                <i class="ri-user-3-line text-2xl transition-transform duration-200"></i>
+                <i class="ri-user-3-line text-xl transition-transform duration-200"></i>
                 <span class="text-[10px] font-medium">Profile</span>
             </button>
         </div>
     </nav>
 
     <script>
-        // 1. SMOOTH SPLASH LOGIC
+        // 1. CINEMATIC INTRO TIMING
+        // The CSS animation takes roughly 3.3s total (1s fade in + 1.5s wait + 0.8s zoom)
         window.onload = () => {
             setTimeout(() => {
-                document.body.classList.add('loaded'); // Triggers the CSS transition
+                document.body.classList.add('loaded'); // Hides splash, shows app
                 
-                // Allow scrolling after animation finishes
+                // Allow scrolling after transition completes
                 setTimeout(() => {
                     document.body.style.overflow = 'auto';
-                }, 800);
-            }, 2200);
+                }, 1000);
+            }, 3200); // 3.2 Seconds total duration
         };
 
         // 2. NAV LOGIC
@@ -217,24 +221,17 @@
             document.querySelectorAll('.nav-btn').forEach(b => {
                 b.classList.remove('text-accent', 'active');
                 b.classList.add('text-gray-500');
-                // Icon to line
                 let i = b.querySelector('i');
                 i.className = i.className.replace('-fill', '-line');
-                // Reset specific icons logic if needed
-                if(i.classList.contains('ri-home-smile-line')) i.className = i.className; 
             });
 
             // Activate
             btn.classList.remove('text-gray-500');
             btn.classList.add('text-accent', 'active');
-            
-            // Icon to fill
             let i = btn.querySelector('i');
             i.className = i.className.replace('-line', '-fill');
-            
-            // Pop Animation
-            i.classList.add('scale-110');
-            setTimeout(() => i.classList.remove('scale-110'), 200);
+            i.classList.add('scale-125');
+            setTimeout(() => i.classList.remove('scale-125'), 200);
         }
 
         // 3. HEADER SCROLL FADE
@@ -243,10 +240,10 @@
         
         main.addEventListener('scroll', () => {
             if (main.scrollTop > 50) {
-                header.classList.add('bg-bg-main/90', 'backdrop-blur-xl', 'border-b', 'border-white/5');
+                header.classList.add('bg-black/90', 'backdrop-blur-xl', 'border-b', 'border-white/5');
                 header.classList.remove('bg-gradient-to-b');
             } else {
-                header.classList.remove('bg-bg-main/90', 'backdrop-blur-xl', 'border-b', 'border-white/5');
+                header.classList.remove('bg-black/90', 'backdrop-blur-xl', 'border-b', 'border-white/5');
                 header.classList.add('bg-gradient-to-b');
             }
         });
